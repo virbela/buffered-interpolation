@@ -1,10 +1,10 @@
 {
-  "name": "buffered-interpolation",
+  "name": "buffered-interpolation-babylon",
   "version": "0.2.5",
   "description": "A class for handling interpolation of networked Babylon JS objects.",
   "homepage": "https://github.com/virbela/buffered-interpolation",
   "main": "dist/index.js",
-  "author": "Kevin Lee <kevin@infinite-lee.com>",
+  "author": "Will Murphy <william.murphy@virbela.com>",
   "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/virbela/buffered-interpolation/issues"
@@ -22,7 +22,6 @@
     "interpolation",
     "lerping",
     "hermite",
-    "aframe",
     "multiplayer",
     "networked",
     "networking",
