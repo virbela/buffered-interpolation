@@ -1,17 +1,17 @@
 import { Vector3, Quaternion } from "@babylonjs/core/Maths/math.vector";
 
-enum STATE {
+export enum BufferState {
   INITIALIZING = 0,
   BUFFERING = 1,
   PLAYING = 2
 }
 
-enum MODE {
+export enum BufferMode {
   MODE_LERP = 0,
   MODE_HERMITE = 1
 }
 
-interface frame {
+export interface frame {
   position: Vector3;
   velocity: Vector3;
   scale: Vector3;
@@ -30,7 +30,7 @@ const getPooledFrame: () => frame = () => {
   let frame = framePool.pop();
 
   if (!frame) {
-    frame = { position: new Vector3(), velocity: new Vector3(), scale: new Vector3(), quaternion: new Quaternion(), time: 0 };
+    frame = { position: new Vector3(), velocity: new Vector3(), scale: new Vector3(1, 1, 1), quaternion: new Quaternion(), time: 0 };
   }
 
   return frame;
@@ -39,8 +39,8 @@ const getPooledFrame: () => frame = () => {
 const freeFrame: (f: frame) => void = f => framePool.push(f);
 
 export class InterpolationBuffer {
-  state: STATE;
-  mode: MODE;
+  state: BufferState;
+  mode: BufferMode;
   buffer: frame[];
   originFrame: frame;
   position: Vector3;
@@ -49,8 +49,8 @@ export class InterpolationBuffer {
   time: number;
   bufferTime: number;
 
-  constructor(mode = MODE.MODE_LERP, bufferTime = 0.15) {
-    this.state = STATE.INITIALIZING;
+  constructor(mode = BufferMode.MODE_LERP, bufferTime = 0.15) {
+    this.state = BufferState.INITIALIZING;
     this.buffer = [];
     this.bufferTime = bufferTime * 1000;
     this.time = 0;
@@ -138,23 +138,23 @@ export class InterpolationBuffer {
   }
 
   update(delta: number) {
-    if (this.state === STATE.INITIALIZING) {
+    if (this.state === BufferState.INITIALIZING) {
       if (this.buffer.length > 0) {
         this.updateOriginFrameToBufferTail();
         this.position.copyFrom(this.originFrame.position);
         this.quaternion.copyFrom(this.originFrame.quaternion);
         this.scale.copyFrom(this.originFrame.scale);
-        this.state = STATE.BUFFERING;
+        this.state = BufferState.BUFFERING;
       }
     }
 
-    if (this.state === STATE.BUFFERING) {
+    if (this.state === BufferState.BUFFERING) {
       if (this.buffer.length > 0 && this.time > this.bufferTime) {
-        this.state = STATE.PLAYING;
+        this.state = BufferState.PLAYING;
       }
     }
 
-    if (this.state === STATE.PLAYING) {
+    if (this.state === BufferState.PLAYING) {
       const mark = this.time - this.bufferTime;
       //Purge this.buffer of expired frames
       while (this.buffer.length > 0 && mark > this.buffer[0].time) {
@@ -175,9 +175,9 @@ export class InterpolationBuffer {
         const delta_time = targetFrame.time - this.originFrame.time;
         const alpha = (mark - this.originFrame.time) / delta_time;
 
-        if (this.mode === MODE.MODE_LERP) {
+        if (this.mode === BufferMode.MODE_LERP) {
           this.lerp(this.position, this.originFrame.position, targetFrame.position, alpha);
-        } else if (this.mode === MODE.MODE_HERMITE) {
+        } else if (this.mode === BufferMode.MODE_HERMITE) {
           this.hermite(
             this.position,
             alpha,
@@ -194,7 +194,7 @@ export class InterpolationBuffer {
       }
     }
 
-    if (this.state !== STATE.INITIALIZING) {
+    if (this.state !== BufferState.INITIALIZING) {
       this.time += delta;
     }
   }

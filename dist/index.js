@@ -1,15 +1,15 @@
 import { Vector3, Quaternion } from "@babylonjs/core/Maths/math.vector";
-var STATE;
-(function (STATE) {
-    STATE[STATE["INITIALIZING"] = 0] = "INITIALIZING";
-    STATE[STATE["BUFFERING"] = 1] = "BUFFERING";
-    STATE[STATE["PLAYING"] = 2] = "PLAYING";
-})(STATE || (STATE = {}));
-var MODE;
-(function (MODE) {
-    MODE[MODE["MODE_LERP"] = 0] = "MODE_LERP";
-    MODE[MODE["MODE_HERMITE"] = 1] = "MODE_HERMITE";
-})(MODE || (MODE = {}));
+export var BufferState;
+(function (BufferState) {
+    BufferState[BufferState["INITIALIZING"] = 0] = "INITIALIZING";
+    BufferState[BufferState["BUFFERING"] = 1] = "BUFFERING";
+    BufferState[BufferState["PLAYING"] = 2] = "PLAYING";
+})(BufferState || (BufferState = {}));
+export var BufferMode;
+(function (BufferMode) {
+    BufferMode[BufferMode["MODE_LERP"] = 0] = "MODE_LERP";
+    BufferMode[BufferMode["MODE_HERMITE"] = 1] = "MODE_HERMITE";
+})(BufferMode || (BufferMode = {}));
 // const vectorPool: Vector3[] = [];
 // const quatPool: Quaternion[] = [];
 const framePool = [];
@@ -18,14 +18,14 @@ const framePool = [];
 const getPooledFrame = () => {
     let frame = framePool.pop();
     if (!frame) {
-        frame = { position: new Vector3(), velocity: new Vector3(), scale: new Vector3(), quaternion: new Quaternion(), time: 0 };
+        frame = { position: new Vector3(), velocity: new Vector3(), scale: new Vector3(1, 1, 1), quaternion: new Quaternion(), time: 0 };
     }
     return frame;
 };
 const freeFrame = f => framePool.push(f);
 export class InterpolationBuffer {
-    constructor(mode = MODE.MODE_LERP, bufferTime = 0.15) {
-        this.state = STATE.INITIALIZING;
+    constructor(mode = BufferMode.MODE_LERP, bufferTime = 0.15) {
+        this.state = BufferState.INITIALIZING;
         this.buffer = [];
         this.bufferTime = bufferTime * 1000;
         this.time = 0;
@@ -98,21 +98,21 @@ export class InterpolationBuffer {
         this.appendBuffer(undefined, undefined, undefined, scale);
     }
     update(delta) {
-        if (this.state === STATE.INITIALIZING) {
+        if (this.state === BufferState.INITIALIZING) {
             if (this.buffer.length > 0) {
                 this.updateOriginFrameToBufferTail();
                 this.position.copyFrom(this.originFrame.position);
                 this.quaternion.copyFrom(this.originFrame.quaternion);
                 this.scale.copyFrom(this.originFrame.scale);
-                this.state = STATE.BUFFERING;
+                this.state = BufferState.BUFFERING;
             }
         }
-        if (this.state === STATE.BUFFERING) {
+        if (this.state === BufferState.BUFFERING) {
             if (this.buffer.length > 0 && this.time > this.bufferTime) {
-                this.state = STATE.PLAYING;
+                this.state = BufferState.PLAYING;
             }
         }
-        if (this.state === STATE.PLAYING) {
+        if (this.state === BufferState.PLAYING) {
             const mark = this.time - this.bufferTime;
             //Purge this.buffer of expired frames
             while (this.buffer.length > 0 && mark > this.buffer[0].time) {
@@ -133,17 +133,17 @@ export class InterpolationBuffer {
                 const targetFrame = this.buffer[0];
                 const delta_time = targetFrame.time - this.originFrame.time;
                 const alpha = (mark - this.originFrame.time) / delta_time;
-                if (this.mode === MODE.MODE_LERP) {
+                if (this.mode === BufferMode.MODE_LERP) {
                     this.lerp(this.position, this.originFrame.position, targetFrame.position, alpha);
                 }
-                else if (this.mode === MODE.MODE_HERMITE) {
+                else if (this.mode === BufferMode.MODE_HERMITE) {
                     this.hermite(this.position, alpha, this.originFrame.position, targetFrame.position, this.originFrame.velocity.scaleInPlace(delta_time), targetFrame.velocity.scaleInPlace(delta_time));
                 }
                 this.slerp(this.quaternion, this.originFrame.quaternion, targetFrame.quaternion, alpha);
                 this.lerp(this.scale, this.originFrame.scale, targetFrame.scale, alpha);
             }
         }
-        if (this.state !== STATE.INITIALIZING) {
+        if (this.state !== BufferState.INITIALIZING) {
             this.time += delta;
         }
     }
