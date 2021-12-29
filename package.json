@@ -1,23 +1,23 @@
 {
   "name": "buffered-interpolation",
   "version": "0.2.5",
-  "description": "A class for handling interpolation of networked THREE.js objects.",
-  "homepage": "https://github.com/infinitelee/buffered-interpolation",
-  "main": "dist/buffered-interpolation.js",
+  "description": "A class for handling interpolation of networked Babylon JS objects.",
+  "homepage": "https://github.com/virbela/buffered-interpolation",
+  "main": "dist/index.js",
   "author": "Kevin Lee <kevin@infinite-lee.com>",
   "license": "MPL-2.0",
   "bugs": {
-    "url": "https://github.com/infinitelee/buffered-interpolation/issues"
+    "url": "https://github.com/virbela/buffered-interpolation/issues"
   },
   "scripts": {
-    "dist": "babel index.js -o dist/buffered-interpolation.js --presets=env && babel index.js -o dist/buffered-interpolation.min.js --presets=minify"
+    "dist": "tsc --outDir dist",
+    "distold": "babel index.js -o dist/buffered-interpolation.js --presets=env && babel index.js -o dist/buffered-interpolation.min.js --presets=minify"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0",
-    "babel-preset-minify": "^0.4.3"
+    "@babylonjs/core": "5.0.0-alpha.54",
+    "typescript": "^4.5.4"
   },
-  "repository": "infinitelee/buffered-interpolation",
+  "repository": "virbela/buffered-interpolation",
   "keywords": [
     "interpolation",
     "lerping",
@@ -26,7 +26,6 @@
     "multiplayer",
     "networked",
     "networking",
-    "three",
-    "three.js"
+    "babylonjs"
   ]
 }
