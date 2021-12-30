@@ -14,8 +14,10 @@
     "distold": "babel index.js -o dist/buffered-interpolation.js --presets=env && babel index.js -o dist/buffered-interpolation.min.js --presets=minify"
   },
   "devDependencies": {
-    "@babylonjs/core": "5.0.0-alpha.54",
     "typescript": "^4.5.4"
+  },
+  "peerDependencies": {
+    "@babylonjs/core": "^5.0.0-alpha.54"
   },
   "repository": "virbela/buffered-interpolation",
   "keywords": [
