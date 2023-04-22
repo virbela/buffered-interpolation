@@ -6,6 +6,9 @@
   "main": "dist/index.js",
   "author": "Will Murphy <william.murphy@virbela.com>",
   "license": "MPL-2.0",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "bugs": {
     "url": "https://github.com/virbela/buffered-interpolation/issues"
   },
