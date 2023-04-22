@@ -1,5 +1,5 @@
 {
-  "name": "buffered-interpolation-babylon",
+  "name": "buffered-interpolation-babylon6",
   "version": "0.2.7",
   "description": "A class for handling interpolation of networked Babylon JS objects.",
   "homepage": "https://github.com/virbela/buffered-interpolation",
