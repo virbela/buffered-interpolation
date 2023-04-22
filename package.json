@@ -17,7 +17,7 @@
     "typescript": "^4.5.4"
   },
   "peerDependencies": {
-    "@babylonjs/core": "^5.0.0-alpha.54"
+    "@babylonjs/core": "^6.0.0"
   },
   "repository": "virbela/buffered-interpolation",
   "keywords": [
